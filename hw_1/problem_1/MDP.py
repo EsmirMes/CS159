@@ -137,15 +137,19 @@ class MDP(object):
 		# with the move forward acton and parking action, respectively 
 		# (hint: use the variable sThreshold and the command vstack)
 		Ppi = self.P[int(0 >= sThreshold)][0]
-		for i in range(1, self.N):
-			np.vstack((Ppi, self.P[int(i >= sThreshold)][i]))
+		for i in range(1, 2 * self.N):
+			Ppi = np.vstack((Ppi, self.P[int(i >= sThreshold)][i]))
+		Ppi = np.vstack((Ppi, self.P[1][2*self.N]))
+		Ppi = np.vstack((Ppi, self.P[1][2*self.N + 1]))
 
 		# You need to combine the vectors self.C[0] and self.C[1] which are assocaied 
 		# with the move forward acton and parking action, respectively (hint: use the variable sThreshold)
 		# (hint: use the variable sThreshold and the command hstack)
 		Cpi = self.C[int(0 >= sThreshold)][0]
-		for i in range(1, self.N):
-			np.hstack((Cpi, self.C[int(i >= sThreshold)][i]))
+		for i in range(1, 2*self.N):
+			Cpi = np.hstack((Cpi, self.C[int(i >= sThreshold)][i]))
+		Cpi = np.hstack((Cpi, self.C[1][2*self.N]))
+		Cpi = np.hstack((Cpi, self.C[1][2*self.N + 1]))
 
 		if self.printLevel >= 3:
 			print("Ppi: ")
