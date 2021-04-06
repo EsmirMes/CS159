@@ -126,20 +126,26 @@ class MDP(object):
 
 	def computePolicy(self,iThreshold = 0):
 		# Compute the state sThreshold such that
-		# if a state s <  sThreshold --> the transition probabilities are are given by the matrix self.P[0] associated with the move forward action
-		# if a state s >= sThreshold --> the transition probabilities are are given by the matrix self.P[1] associated with the park action
+		# if a state s <  sThreshold --> the transition probabilities are
+		#   given by the matrix self.P[0] associated with the move forward action
+		# if a state s >= sThreshold --> the transition probabilities are
+		#   given by the matrix self.P[1] associated with the park action
 		sThreshold = 2*iThreshold
 
 
 		# You need to combine the matrices self.P[0] and self.P[1] which are assocaied 
 		# with the move forward acton and parking action, respectively 
 		# (hint: use the variable sThreshold and the command vstack)
-		Ppi = ...
+		Ppi = self.P[int(0 >= sThreshold)][0]
+		for i in range(1, self.N):
+			np.vstack((Ppi, self.P[int(i >= sThreshold)][i]))
 
 		# You need to combine the vectors self.C[0] and self.C[1] which are assocaied 
 		# with the move forward acton and parking action, respectively (hint: use the variable sThreshold)
 		# (hint: use the variable sThreshold and the command hstack)
-		Cpi = ...
+		Cpi = self.C[int(0 >= sThreshold)][0]
+		for i in range(1, self.N):
+			np.hstack((Cpi, self.C[int(i >= sThreshold)][i]))
 
 		if self.printLevel >= 3:
 			print("Ppi: ")
@@ -170,13 +176,13 @@ class MDP(object):
 			s_n = 2*(i+1) # (i+1)-th parking spot free for (i+1) < N and garage for (i+1) = N 
 
 			if i == self.N-1:
-				P_move_forward[i_f, s_n] = ... 
-				P_move_forward[i_o, s_n] = ...
+				P_move_forward[i_f, s_n] = 1
+				P_move_forward[i_o, s_n] = 1
 			else:
-				P_move_forward[i_o, s_n+0] = ... 
-				P_move_forward[i_o, s_n+1] = ...
-				P_move_forward[i_f, s_n+0] = ... 
-				P_move_forward[i_f, s_n+1] = ...
+				P_move_forward[i_o, s_n+0] = self.p
+				P_move_forward[i_o, s_n+1] = 1-self.p
+				P_move_forward[i_f, s_n+0] = self.p
+				P_move_forward[i_f, s_n+1] = 1-self.p
 
 		# Parking
 		for i  in range(0, self.N):
@@ -185,12 +191,12 @@ class MDP(object):
 			s_n = 2*(i+1) # (i+1)-th parking spot free
 
 			if i == self.N-1:
-				P_park[i_f, -1] = ...
-				P_park[i_o, s_n] = ... 
+				P_park[i_f, -1] = 1
+				P_park[i_o, s_n] = 1
 			else:
-				P_park[i_f, -1] = ...
-				P_park[i_o, s_n+0] = ... 
-				P_park[i_o, s_n+1] = ...
+				P_park[i_f, -1] = 1
+				P_park[i_o, s_n+0] = self.p
+				P_park[i_o, s_n+1] = 1-self.p
 			
 		# Compute cost vector associated with each action
 		C_move_forward = np.zeros(2*self.N+2);
@@ -202,7 +208,7 @@ class MDP(object):
 
 		for i in range(0, self.N):
 			i_f = 2*i # i-th parking spot free
-			C_park[i_f] = ...
+			C_park[i_f] = self.N - i
 		
 		if self.printLevel >= 2:
 			print("P_move_forward:")
