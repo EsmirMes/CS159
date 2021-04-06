@@ -3,12 +3,12 @@ import pdb
 
 
 # Problem Paramters
-N  = 5  # Number of parcking spots
+N  = 200  # Number of parcking spots
 p  = 0.05 # Probability of transitioning to a free parking spot
-Cg = 4  # Cost of parking to the garage
+Cg = 100  # Cost of parking to the garage
 
 # Initialize mdp object
-printLevel = 3
+printLevel = 0
 mdp = MDP(N, p, Cg, printLevel)
 
 # Build transition probability
@@ -24,4 +24,4 @@ mdp.policyEvaluation(Ppi, Cpi)
 mdp.valueIteration()
 
 # # # Perform policy iteration to compute the optimal value function
-# mdp.policyIteration()
+mdp.policyIteration()
