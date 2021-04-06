@@ -29,13 +29,14 @@ class MDP(object):
 		for a in range(0, self.actions):
 			C_a_s = self.C[a][s]
 			P_a_s = self.P[a][s,:]
-			val = ...
+			val = C_a_s + np.sum(P_a_s * V)
 			cost.append(val)
 
 		# s-th component of the value function vector
-		Vn_s = ...
+		Vn_s = np.min(cost)
 		# s-th component of the action vector
-		An_s = ...
+		An_s = np.argmin(cost)
+		print(An_s)
 
 		return Vn_s, An_s
 
@@ -94,7 +95,7 @@ class MDP(object):
 			# Notice that self.states = 2N+2 = total number of states
 			# Hint: You need to update the vectors Vnext \in \mathbb{R}^{self.states} and Anext \in \mathbb{R}^{self.states}
 			for s in range(0, self.states):
-				...
+				Vnext[s], Anext[s] = self.bellmanRecursion(s, Vcurrent)
 
 			Vn.append(Vnext)
 			An.append(Anext)

@@ -21,7 +21,7 @@ Ppi, Cpi = mdp.computePolicy(iThreshold = 3)
 mdp.policyEvaluation(Ppi, Cpi)
 
 # # Perform value iteration to compute the optimal value function
-# mdp.valueIteration()
+mdp.valueIteration()
 
 # # # Perform policy iteration to compute the optimal value function
 # mdp.policyIteration()
