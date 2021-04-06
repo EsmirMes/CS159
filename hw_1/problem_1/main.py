@@ -18,7 +18,7 @@ mdp.buildTransitionMatrices()
 Ppi, Cpi = mdp.computePolicy(iThreshold = 3)
 
 # # Evaluate the policy for Ppi and Cpi
-# mdp.policyEvaluation(Ppi, Cpi)
+mdp.policyEvaluation(Ppi, Cpi)
 
 # # Perform value iteration to compute the optimal value function
 # mdp.valueIteration()

@@ -48,7 +48,7 @@ class MDP(object):
 		# Policy Iteration Loop
 		for j in range(0, self.maxIt):
 			# Hint: use the functions that you have already developed
-			[Ppi, Cpi] = ... # First compute a policy for the threshild value iThreshold
+			[Ppi, Cpi] = self.computePolicy(iThreshold) # First compute a policy for the threshild value iThreshold
 			Vnext      = ... # Policy evaluation step
 			iThreshold = ... # Policy improvement step;
 			Vn.append(Vnext)
@@ -112,8 +112,11 @@ class MDP(object):
 
 		# Run iterative strategy
 		for j in range(0,self.maxIt):
-			Vnext = ... # Hint: here you need to use only Vn[-1], P and C.
-			Vn.append( Vnext )
+			Vnext = []
+			for s in range(self.states):
+				Vnext.append(C[s] + np.sum(P[s, :] * Vn[-1])) # Hint: here you need to use only Vn[-1], P and C.
+			Vnext = np.array(Vnext)
+			Vn.append(Vnext)
 
 			# Check if algorithm has converged
 			if ((j>1) and np.sum(Vn[-1]-Vn[-2])==0):
@@ -137,19 +140,19 @@ class MDP(object):
 		# with the move forward acton and parking action, respectively 
 		# (hint: use the variable sThreshold and the command vstack)
 		Ppi = self.P[int(0 >= sThreshold)][0]
-		for i in range(1, 2 * self.N):
+		for i in range(1, self.states - 2):
 			Ppi = np.vstack((Ppi, self.P[int(i >= sThreshold)][i]))
-		Ppi = np.vstack((Ppi, self.P[1][2*self.N]))
-		Ppi = np.vstack((Ppi, self.P[1][2*self.N + 1]))
+		Ppi = np.vstack((Ppi, self.P[1][2 * self.N]))
+		Ppi = np.vstack((Ppi, self.P[1][2 * self.N + 1]))
 
 		# You need to combine the vectors self.C[0] and self.C[1] which are assocaied 
 		# with the move forward acton and parking action, respectively (hint: use the variable sThreshold)
 		# (hint: use the variable sThreshold and the command hstack)
 		Cpi = self.C[int(0 >= sThreshold)][0]
-		for i in range(1, 2*self.N):
+		for i in range(1, self.states - 2):
 			Cpi = np.hstack((Cpi, self.C[int(i >= sThreshold)][i]))
-		Cpi = np.hstack((Cpi, self.C[1][2*self.N]))
-		Cpi = np.hstack((Cpi, self.C[1][2*self.N + 1]))
+		Cpi = np.hstack((Cpi, self.C[1][2 * self.N]))
+		Cpi = np.hstack((Cpi, self.C[1][2 * self.N + 1]))
 
 		if self.printLevel >= 3:
 			print("Ppi: ")
@@ -212,7 +215,7 @@ class MDP(object):
 
 		for i in range(0, self.N):
 			i_f = 2*i # i-th parking spot free
-			C_park[i_f] = self.N - i
+			C_park[i_f] = self.N-i
 		
 		if self.printLevel >= 2:
 			print("P_move_forward:")
