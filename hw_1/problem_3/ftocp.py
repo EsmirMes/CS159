@@ -58,7 +58,7 @@ class FTOCP(object):
 
 		# Solve QP
 		startTimer = datetime.datetime.now()
-		self.osqp_solve_qp(self.H, self.q, self.G_in, np.add(self.w_in, np.dot(self.E_in,x0)), self.G_eq, ... )
+		self.osqp_solve_qp(self.H, self.q, self.G_in, np.add(self.w_in, np.dot(self.E_in,x0)), self.G_eq, np.dot(self.E_eq,x0) + self.C_eq)
 		endTimer = datetime.datetime.now(); deltaTimer = endTimer - startTimer
 		self.solverTime = deltaTimer
 		
@@ -77,15 +77,39 @@ class FTOCP(object):
 		if self.printLevel >= 2:
 			print("Optimal State Trajectory: ")
 			print(self.xPred)
+			"""
+[[-1.50000000e+01  1.50000000e+01]
+ [-8.59158911e-21  1.10954174e+01]
+ [ 5.54770871e+00  8.48879377e+00]
+ [ 7.66990716e+00  7.04656538e+00]
+ [ 8.55072783e+00  6.40687762e+00]]
+			"""
 
 			print("Optimal Input Trajectory: ")
 			print(self.uPred)
+			"""
+[[-4.90458258]
+ [-2.70662365]
+ [-1.4522284 ]
+ [-0.64068776]]
+			"""
 
 		if self.printLevel >= 1: print("Solver Time: ", self.solverTime.total_seconds(), " seconds.")
 
 	def buildIneqConstr(self):
 		# Hint: Are the matrices G_in, E_in and w_in constructed using  A and B? 
-		...
+		G_in = [self.Fx] * (self.N - 1) + \
+			[self.Ff] + [self.Fu] * self.N
+		G_in = linalg.block_diag(*G_in)  # 24 x 12
+		zero_padding = np.zeros([self.Fx.shape[0], G_in.shape[1]])  # 4 x 12
+		G_in = np.vstack((zero_padding, G_in))  # 28 x 12
+
+		E_in = np.zeros([self.n, G_in.shape[0]])  # 2 x 28
+		E_in[:self.Fx.shape[1], :self.Fx.shape[0]] = -self.Fx.T
+		E_in = E_in.T  # 28 x 2
+
+		w_in = [self.bx.T] * self.N + [self.bf.T] + [self.bu.T] * self.N
+		w_in = np.hstack(w_in)  # 28
 
 		if self.printLevel >= 2:
 			print("G_in: ")
@@ -101,7 +125,12 @@ class FTOCP(object):
 
 	def buildCost(self):
 		# Hint: Are the matrices H and q constructed using  A and B? 
-		...
+		
+		barQ = [self.Q] * (self.N - 1) + [self.Qf]
+		barQ = linalg.block_diag(*barQ)  # 8 x 8
+		barR = [self.R] * self.N
+		barR = linalg.block_diag(*barR)  # 4 x 4
+
 
 		H = linalg.block_diag(barQ, barR)
 		q = np.zeros(H.shape[0]) 
@@ -115,7 +144,22 @@ class FTOCP(object):
 		self.H = sparse.csc_matrix(2 * H)  #  Need to multiply by two because CVX considers 1/2 in front of quadratic cost
 
 	def buildEqConstr(self):
-		...
+
+		
+		G_eq = [np.eye(self.n)] * (self.N)
+		G_eq = linalg.block_diag(*G_eq)  # 8 x 8
+		As = linalg.block_diag(*self.A[1:])  # 6 x 6
+		G_eq[self.n:, :-self.n] -= As  # 8 x 8
+		Bs = linalg.block_diag(*self.B)  # 8 x 4
+		G_eq = np.hstack((G_eq, -Bs))  # 8 x 12		
+
+
+		E_eq = np.zeros([self.n, G_eq.shape[0]])
+		E_eq[:self.A[0].shape[1], :self.A[0].shape[0]] = self.A[0].T
+		E_eq = E_eq.T  # 8 x 2
+
+		C_eq = np.hstack(self.C).T  # 8 x 1
+		# C_eq = np.concatenate(self.C, axis=1).T
 
 		if self.printLevel >= 2:
 			print("G_eq: ")

@@ -8,16 +8,17 @@ from numpy import linalg as la
 
 # =====================================================
 # Initialize system parameters
-A = np.array([[1, 1],
-	          [0, 1]]);
-B = np.array([[0], 
-			  [1]]);
-C = []
+# Comment out these cause they are not used.
+# A = np.array([[1, 1],
+# 	          [0, 1]]);
+# B = np.array([[0], 
+# 			  [1]]);
+# C = []
 x0    = np.array([-15.0,15.0])   # initial condition
 
 # Initialize ftocp parameters
 printLevel = 3
-N  = 4
+N  = 4; n = 2; d = 1;
 Q      = np.eye(2)
 R      = 10*np.eye(1)
 Qf     = np.eye(2)
