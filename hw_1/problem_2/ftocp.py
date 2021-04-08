@@ -107,6 +107,19 @@ class FTOCP(object):
 
 	def buildCost(self):
 		# Hint: you could use the function "linalg.block_diag"
+		"""
+		A = [[1, 1], [0, 1]]
+		B = [[0], [1]]
+		U_0 has dim: N x 1
+			goes from u_1 to u_N
+		X_0 has dim: 2N x 1
+			goes from x_1 to x_N
+		x(0) has dim: 2 x 1
+		[[X_0], [U_0]]] has dim 3N x 1
+		G_{0, eq} has dim: 2N x 3N
+			creates dynamics constraints from time 1 to N
+		E_{0, eq} has dim: 2N x 2
+		"""
 		barQ = ...
 		barR = ...
 
@@ -122,6 +135,27 @@ class FTOCP(object):
 		self.H = sparse.csc_matrix(2 * H)  #  Need to multiply by two because CVX considers 1/2 in front of quadratic cost
 
 	def buildEqConstr(self):
+		"""
+		A = [[1, 1], [0, 1]]
+		B = [[0], [1]]
+		Fx = [[1, 0], [0, 1],[-1, 0], [0, -1]] has dim: 4 x 2
+		bx = [15, 15, 15, 15] has dim: 4
+		Fu = [[1], [-1]] has dim: 2 x 1
+		bu = [5, 5] has dim: 2
+		Ff = [[1, 0], [0, 1],[-1, 0], [0, -1]] has dim: 4 x 2
+		bf = [15, 15, 15, 15] has dim: 4
+		U_0 has dim: N x 1
+			goes from u_1 to u_N
+		X_0 has dim: 2N x 1
+			goes from x_1 to x_N
+		x(0) has dim: 2 x 1
+		[[X_0], [U_0]]] has dim 3N x 1
+		x(0) has dim: 2 x 1
+
+		G_{0, in} has dim: (4 + 4N + 2N) x 3N
+		E_{0, in} has dim: (4N + 4 + 2N) x 2
+		w_{0, in} has dim: (4N + 4 + 2N) x 1
+		"""
 		# Hint 1: consider building submatrices and then stack them together
 		# Hint 2: most likely you will need to use auxiliary variables 
 		...
