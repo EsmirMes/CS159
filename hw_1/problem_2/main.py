@@ -31,18 +31,17 @@ bu = np.array([5]*2)
 
 Ff = Fx
 bf = bx
-
 # =====================================================
 # Solve FTOCP and plot the solutiob
 ftocp = FTOCP(N, A, B, Q, R, Qf, Fx, bx, Fu, bu, Ff, bf, printLevel)
 
-# ftocp.solve(x0)
+ftocp.solve(x0)
 
-# plt.figure()
-# plt.plot(ftocp.xPred[:,0], ftocp.xPred[:,1], '-ob')
-# plt.title('Optimal Solution')
-# plt.xlabel('$x_1$')
-# plt.ylabel('$x_2$')
-# plt.xlim(-15,15)
-# plt.ylim(-15,15)
-# plt.show()
+plt.figure()
+plt.plot(ftocp.xPred[:,0], ftocp.xPred[:,1], '-ob')
+plt.title('Optimal Solution')
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+plt.xlim(-15,15)
+plt.ylim(-15,15)
+plt.show()
