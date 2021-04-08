@@ -153,13 +153,27 @@ class FTOCP(object):
 		Bs = linalg.block_diag(*self.B)  # 8 x 4
 		G_eq = np.hstack((G_eq, -Bs))  # 8 x 12		
 
-
+		"""
+		G_eq: 
+[[ 1.     0.     0.     0.     0.     0.     0.     0.     0.     0.   0.     0.   ]
+ [ 0.     1.     0.     0.     0.     0.     0.     0.    -1.     0.   0.     0.   ]
+ [-1.    -0.5    1.     0.     0.     0.     0.     0.     0.     0.   0.     0.   ]
+ [ 0.    -1.     0.     1.     0.     0.     0.     0.     0.    -1.   0.     0.   ]
+ [ 0.     0.    -1.    -0.25   1.     0.     0.     0.     0.     0.   0.     0.   ]
+ [ 0.     0.     0.    -1.     0.     1.     0.     0.     0.     0.  -1.     0.   ]
+ [ 0.     0.     0.     0.    -1.    -0.125  1.     0.     0.     0.   0.     0.   ]
+ [ 0.     0.     0.     0.     0.    -1.     0.     1.     0.     0.   0.    -1.   ]]
+		"""
 		E_eq = np.zeros([self.n, G_eq.shape[0]])
 		E_eq[:self.A[0].shape[1], :self.A[0].shape[0]] = self.A[0].T
 		E_eq = E_eq.T  # 8 x 2
 
 		C_eq = np.hstack(self.C).T  # 8 x 1
 		# C_eq = np.concatenate(self.C, axis=1).T
+
+		"""
+		C_eq:  [0.    1.    0.    0.1   0.    0.01  0.    0.001]
+		"""
 
 		if self.printLevel >= 2:
 			print("G_eq: ")
