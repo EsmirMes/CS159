@@ -3,12 +3,12 @@ import pdb
 
 
 # Problem Paramters
-N  = 200  # Number of parcking spots
+N  = 5  # Number of parcking spots
 p  = 0.05 # Probability of transitioning to a free parking spot
-Cg = 100  # Cost of parking to the garage
+Cg = 4  # Cost of parking to the garage
 
 # Initialize mdp object
-printLevel = 0
+printLevel = 2
 mdp = MDP(N, p, Cg, printLevel)
 
 # Build transition probability

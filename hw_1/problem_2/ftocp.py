@@ -229,7 +229,9 @@ array([15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
 		barQ = linalg.block_diag(*barQ)  # 8 x 8
 		barR = [self.R] * self.N
 		barR = linalg.block_diag(*barR)  # 4 x 4
-
+		import ipdb
+		ipdb.set_trace()
+		
 		H = linalg.block_diag(barQ, barR)  # 12 x 12
 		q = np.zeros(H.shape[0])   # 12
 		"""
