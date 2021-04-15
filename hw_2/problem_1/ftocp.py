@@ -139,8 +139,39 @@ class FTOCP(object):
 		
 		goal = self.goal
 		# Hint: First construct a vector z_{goal} using the goal state and then leverage the matrix H
-		...
-		q    = ...
+		"""
+		X_t has dim: 4N x 1
+			goes from x_{t+1} to x_{t+N}
+		U_t has dim: 2N x 1
+			goes from u_t to u_{t+N-1}
+
+		[[X_t], [U_t]]] has dim 6N x 1
+
+		Qf has dim: 4 x 4
+		goal has dim: 4
+			goal = [end x, end y, end velocity, end angle]
+
+
+		(x_k - x_G)' Q (x_k - x_G)
+		= (x_k' Q x_k) - x_G' Q x_k - x_k' Q x_G + x_G' Q x_G
+
+		- 2 * (x_G' * Q)
+		x_G has dim: 4 x 1
+		Q has dim: 4 x 4
+		z_goal = - 2 * (x_G' * Q) has dim: 4 x 1
+
+		q has dim: 6N x 1
+			q will repeat z_goal N-1 times, then have 4 + 2*N zeros
+		"""
+		
+		# q = np.zeros(6*self.N)
+		z_goal = -2 * goal#np.dot(goal, self.Q)
+		print(z_goal.shape, goal.shape, self.Q.shape)
+		print(z_goal, goal, self.Q)
+		q = np.zeros(H.shape[0])
+		q[:self.n * (self.N - 1)] = np.tile(z_goal, (self.N - 1)).T.flatten()
+		import ipdb
+		# ipdb.set_trace()
 
 		if self.printLevel >= 2:
 			print("H: ")
@@ -152,9 +183,20 @@ class FTOCP(object):
 
 	def buildEqConstr(self):
 		# Hint 1: The equality constraint is: [Gx, Gu]*z = E * x(t) + C
+		# Gx * X_t + Gu * U_t = E_eq * x(t) + C
 		# Hint 2: Write on paper the matrices Gx and Gu to see how these matrices are constructed
 		Gx = np.eye(self.n * self.N )
 		Gu = np.zeros((self.n * self.N, self.d*self.N) )
+		"""
+		Gx has dim: (4 * N) x (4 * N)
+		Gu has dim: (4 * N) x (2 * N)
+		E_eq has dim: (4 * N) x 4
+		x_t has dim: 4 x 1
+		so C has dim: (4 * N) x 1 to match
+
+		A has dim: 4 x 4
+		B has dim: 4 x 2
+		"""
 
 		self.C = []
 		E_eq = np.zeros((Gx.shape[0], self.n))
@@ -163,8 +205,15 @@ class FTOCP(object):
 			if k == 0:
 				E_eq[0:self.n, :] = A
 			else:
-				Gx[...:..., ...:...] = -A
-			Gu[...:..., ...:...] = -B
+				"""
+				Gx already includes the identity
+				We add A to the lower triangular diagonal
+				"""
+				Gx[self.n * k: self.n * (k + 1), self.n * (k-1): self.n * k] = -A
+			"""
+			Make Gu diagonal equal to B, use self.d for indexing
+			"""
+			Gu[self.n*k : self.n*(k + 1), self.d*k : self.d*(k + 1)] = -B
 			self.C = np.append(self.C, C)
 
 		G_eq = np.hstack((Gx, Gu))
