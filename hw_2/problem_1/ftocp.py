@@ -170,12 +170,10 @@ class FTOCP(object):
 			q will repeat z_goal N-1 times, then have 4 + 2*N zeros
 		"""
 		
-		# q = np.zeros(6*self.N)
-		z_goal = -2 * np.dot(goal, self.Q + self.Qf)
-		# print(z_goal.shape, goal.shape, self.Q.shape)
-		# print(z_goal, goal, self.Q)
+		z_goal = np.zeros(H.shape[0])
+		z_goal[:self.n* self.N] = np.tile(goal, (self.N)).T.flatten()
 		q = np.zeros(H.shape[0])
-		q[:self.n * (self.N - 1)] = np.tile(z_goal, (self.N - 1)).T.flatten()
+		q = -2 * np.dot(z_goal, H)
 		# import ipdb
 		# ipdb.set_trace()
 
