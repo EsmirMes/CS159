@@ -42,29 +42,29 @@ for t in range(0,maxTime): # Time loop
 
 x_cl_nlp = np.array(sys.x)
 
-# for timeToPlot in [0, 10]:
-# 	plt.figure()
-# 	plt.plot(xPredNLP[timeToPlot][:,0], xPredNLP[timeToPlot][:,1], '--.b', label="Predicted trajectory at time $t = $"+str(timeToPlot))
-# 	plt.plot(xPredNLP[timeToPlot][0,0], xPredNLP[timeToPlot][0,1], 'ok', label="$x_t$ at time $t = $"+str(timeToPlot))
-# 	plt.xlabel('$x$')
-# 	plt.ylabel('$y$')
-# 	plt.xlim(-1,12)
-# 	plt.ylim(-1,10)
-# 	plt.legend()
+for timeToPlot in [0, 10]:
+	plt.figure()
+	plt.plot(xPredNLP[timeToPlot][:,0], xPredNLP[timeToPlot][:,1], '--.b', label="Predicted trajectory at time $t = $"+str(timeToPlot))
+	plt.plot(xPredNLP[timeToPlot][0,0], xPredNLP[timeToPlot][0,1], 'ok', label="$x_t$ at time $t = $"+str(timeToPlot))
+	plt.xlabel('$x$')
+	plt.ylabel('$y$')
+	plt.xlim(-1,12)
+	plt.ylim(-1,10)
+	plt.legend()
 
-# plt.figure()
-# for t in range(0, maxTime):
-# 	if t == 0:
-# 		plt.plot(xPredNLP[t][:,0], xPredNLP[t][:,1], '--.b', label='Predicted trajectory at time $t$')
-# 	else:
-# 		plt.plot(xPredNLP[t][:,0], xPredNLP[t][:,1], '--.b')
-# plt.plot(x_cl_nlp[:,0], x_cl_nlp[:,1], '-*r', label="Closed-loop trajectory")
-# plt.xlabel('$x$')
-# plt.ylabel('$y$')
-# plt.xlim(-1,12)
-# plt.ylim(-1,10)
-# plt.legend()
-# plt.show()
+plt.figure()
+for t in range(0, maxTime):
+	if t == 0:
+		plt.plot(xPredNLP[t][:,0], xPredNLP[t][:,1], '--.b', label='Predicted trajectory at time $t$')
+	else:
+		plt.plot(xPredNLP[t][:,0], xPredNLP[t][:,1], '--.b')
+plt.plot(x_cl_nlp[:,0], x_cl_nlp[:,1], '-*r', label="Closed-loop trajectory")
+plt.xlabel('$x$')
+plt.ylabel('$y$')
+plt.xlim(-1,12)
+plt.ylim(-1,10)
+plt.legend()
+plt.show()
 
 # # =================================================================
 # # =========== Subsection: Sequential Quadratic Programming ========
@@ -86,34 +86,34 @@ uGuess = [np.array([10, 0.1])]*N
 ftocp = FTOCP(N, Q, R, Qf, Fx, bx, Fu, bu, Ff, bf, dt, uGuess, goal, printLevel)
 ftocp.solve(x0)
 
-# plt.figure()
-# plt.plot(xPredNLP[0][:,0], xPredNLP[0][:,1], '-*r', label='Solution from the NLP')
-# plt.plot(ftocp.xPred[:,0], ftocp.xPred[:,1], '--ob', label='Solution from one iteration of SQP')
-# plt.title('Predicted trajectory')
-# plt.xlabel('$x_1$')
-# plt.ylabel('$x_2$')
-# plt.xlim(-1,12)
-# plt.ylim(-1,10)
-# plt.legend()
+plt.figure()
+plt.plot(xPredNLP[0][:,0], xPredNLP[0][:,1], '-*r', label='Solution from the NLP')
+plt.plot(ftocp.xPred[:,0], ftocp.xPred[:,1], '--ob', label='Solution from one iteration of SQP')
+plt.title('Predicted trajectory')
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+plt.xlim(-1,12)
+plt.ylim(-1,10)
+plt.legend()
 
-# uGuess = []
-# for i in range(0, ftocp.N):
-# 	uGuess.append(ftocp.uPred[i,:]) # Initialize input used for linearization using the optimal input from the first SQP iteration
+uGuess = []
+for i in range(0, ftocp.N):
+	uGuess.append(ftocp.uPred[i,:]) # Initialize input used for linearization using the optimal input from the first SQP iteration
 ftocpSQP = FTOCP(N, Q, R, Qf, Fx, bx, Fu, bu, Ff, bf, dt, uGuess, goal, printLevel)
 ftocpSQP.solve(x0)
 
-# plt.figure()
-# plt.plot(xPredNLP[0][:,0], xPredNLP[0][:,1], '-*r', label='Solution from the NLP')
-# plt.plot(ftocp.xPred[:,0], ftocp.xPred[:,1], '--ob', label='Solution from one iteration of SQP')
-# plt.plot(ftocpSQP.xPred[:,0], ftocpSQP.xPred[:,1], '-.dk', label='Solution from two iterations of SQP')
-# plt.title('Predicted trajectory')
-# plt.xlabel('$x_1$')
-# plt.ylabel('$x_2$')
-# plt.xlim(-1,12)
-# plt.ylim(-1,10)
-# plt.legend()
+plt.figure()
+plt.plot(xPredNLP[0][:,0], xPredNLP[0][:,1], '-*r', label='Solution from the NLP')
+plt.plot(ftocp.xPred[:,0], ftocp.xPred[:,1], '--ob', label='Solution from one iteration of SQP')
+plt.plot(ftocpSQP.xPred[:,0], ftocpSQP.xPred[:,1], '-.dk', label='Solution from two iterations of SQP')
+plt.title('Predicted trajectory')
+plt.xlabel('$x_1$')
+plt.ylabel('$x_2$')
+plt.xlim(-1,12)
+plt.ylim(-1,10)
+plt.legend()
 
-# plt.show()
+plt.show()
 
 # =================================================================
 # =========== Subsection: NMPC using an SQP Approach  =============
