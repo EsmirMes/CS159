@@ -81,9 +81,12 @@ class FTOCP(object):
 
 	def uGuessUpdate(self):
 		uPred = self.uPred
+		# for i in range(0, self.N-1):
+		# 	self.uGuess[i] = np.zeros(2)
+		# self.uGuess[-1] = np.zeros(2)
 		for i in range(0, self.N-1):
-			self.uGuess[i] = ...
-		self.uGuess[-1] = ...
+			self.uGuess[i] = self.uPred[i]
+		self.uGuess[-1] = self.uPred[-2]
 
 	def unpackSolution(self, x0):
 		# Extract predicted state and predicted input trajectories
@@ -155,6 +158,9 @@ class FTOCP(object):
 		(x_k - x_G)' Q (x_k - x_G)
 		= (x_k' Q x_k) - x_G' Q x_k - x_k' Q x_G + x_G' Q x_G
 
+		(x_k - x_G)' Qf (x_k - x_G)
+		= (x_k' Qf x_k) - x_G' Qf x_k - x_k' Qf x_G + x_G' Qf x_G
+
 		- 2 * (x_G' * Q)
 		x_G has dim: 4 x 1
 		Q has dim: 4 x 4
@@ -165,12 +171,12 @@ class FTOCP(object):
 		"""
 		
 		# q = np.zeros(6*self.N)
-		z_goal = -2 * goal#np.dot(goal, self.Q)
-		print(z_goal.shape, goal.shape, self.Q.shape)
-		print(z_goal, goal, self.Q)
+		z_goal = -2 * np.dot(goal, self.Q + self.Qf)
+		# print(z_goal.shape, goal.shape, self.Q.shape)
+		# print(z_goal, goal, self.Q)
 		q = np.zeros(H.shape[0])
 		q[:self.n * (self.N - 1)] = np.tile(z_goal, (self.N - 1)).T.flatten()
-		import ipdb
+		# import ipdb
 		# ipdb.set_trace()
 
 		if self.printLevel >= 2:
@@ -216,6 +222,8 @@ class FTOCP(object):
 			Gu[self.n*k : self.n*(k + 1), self.d*k : self.d*(k + 1)] = -B
 			self.C = np.append(self.C, C)
 
+		# import ipdb
+		# ipdb.set_trace()
 		G_eq = np.hstack((Gx, Gu))
 		C_eq = self.C
 
@@ -245,7 +253,7 @@ class FTOCP(object):
 		self.A_Eval = Function('A',[X,U],[jacobian(self.constraint,X)])
 		self.B_Eval = Function('B',[X,U],[jacobian(self.constraint,U)])
 		self.f_Eval = Function('f',[X,U],[self.constraint])
-	
+
 	def buildLinearizedMatrices(self, x, u):
 		# Give a linearization point (x, u) this function return an affine approximation of the nonlinear system dynamics
 		A_linearized = np.array(self.A_Eval(x, u))
