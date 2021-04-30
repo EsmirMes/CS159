@@ -14,6 +14,7 @@ B = np.array([[0],
 			  [1]]);
 n = 2; d = 1;
 x0      = np.array([13, -5.5])   # initial condition
+# x0      = np.array([2, -1])   # initial condition
 sys     = system(A, B, x0)
 maxTime = 25
 N       = 3
@@ -42,8 +43,11 @@ F_f is dim: 2 x 2
 b_f is dim: 2 x 1
 	is just the terminal set
 """
-Ff = np.eye(n)
-bf = np.zeros(n)
+# Ff = np.eye(n)
+# bf = np.zeros(n)
+## NEED TO BOUND FROM ABOVE AND BELOW!
+Ff = np.vstack((np.eye(n), -np.eye(n)))
+bf = np.array([0, 0]*(2))
 # Doesn't matter
 # Qf = np.eye(n)
 Qf = np.zeros((n, n))
